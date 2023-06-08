@@ -22,7 +22,7 @@ parser.add_argument('--n_epochs', type=int, default=1000, help='number of epochs
 parser.add_argument('--batchSize', type=int, default=32, help='size of the batches')
 parser.add_argument('--dataroot', type=str, default='./dataset/', help='root directory of the dataset')
 parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate')
-parser.add_argument('--decay_epoch', type=int, default=200, help='epoch to start linearly decaying the learning rate to 0')
+parser.add_argument('--decay_epoch', type=int, default=800, help='epoch to start linearly decaying the learning rate to 0')
 parser.add_argument('--size', type=int, default=256, help='size of the data crop (squared assumed)')
 parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
