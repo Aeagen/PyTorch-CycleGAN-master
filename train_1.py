@@ -1,4 +1,3 @@
-
 import argparse
 import itertools
 
@@ -19,21 +18,15 @@ from datasets import ImageDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
-parser.add_argument('--n_epochs', type=int, default=200, help='number of epochs of training')
-parser.add_argument('--batchSize', type=int, default=1, help='size of the batches')
+parser.add_argument('--n_epochs', type=int, default=1000, help='number of epochs of training')
+parser.add_argument('--batchSize', type=int, default=32, help='size of the batches')
 parser.add_argument('--dataroot', type=str, default='./dataset/', help='root directory of the dataset')
 parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate')
-parser.add_argument('--decay_epoch', type=int, default=100, help='epoch to start linearly decaying the learning rate to 0')
-parser.add_argument('--size', type=int, default=512, help='size of the data crop (squared assumed)')
+parser.add_argument('--decay_epoch', type=int, default=200, help='epoch to start linearly decaying the learning rate to 0')
+parser.add_argument('--size', type=int, default=256, help='size of the data crop (squared assumed)')
 parser.add_argument('--input_nc', type=int, default=3, help='number of channels of input data')
 parser.add_argument('--output_nc', type=int, default=3, help='number of channels of output data')
-parser.add_argument('--cuda', action='store_true', help='use GPU computation')
-#parser.add_argument('--n_cpu', type=int, default=1, help='number of cpu threads to use during batch generation')
-parser.add_argument('--load_model_weight' , type = bool , default=False,help= 'loading the weight of the model' )
-parser.add_argument('--generator_A2B',type= str ,default='output/netG_A2B.pth',help='the path of generate A2B')
-parser.add_argument('--generator_B2A',type= str ,default='output/netG_B2A.pth',help='the path of generate B2A')
-parser.add_argument('--Discriminator_A)',type= str ,default='output/netD_A.pth',help='the path of Discriminator_A')
-parser.add_argument('--Discriminator_B',type= str ,default='output/netD_B.pth',help='the path of Discriminator_B')
+parser.add_argument('--cuda', default= True, help='use GPU computation')
 
 opt = parser.parse_args()
 print(opt)
@@ -54,18 +47,10 @@ if opt.cuda:
     netD_A.cuda()
     netD_B.cuda()
 
-# 是否加载预训练好的模型
-if opt.load_model_weight:
-    # Load model weight
-    netG_A2B.load_state_dict(torch.load(opt.generator_A2B))
-    netG_B2A.load_state_dict(torch.load(opt.generator_B2A))
-    netD_A.load_state_dict(torch.load(opt.Discriminator_A))
-    netD_B.load_state_dict(torch.load(opt.Discriminator_B))
-else:
-    netG_A2B.apply(weights_init_normal)
-    netG_B2A.apply(weights_init_normal)
-    netD_A.apply(weights_init_normal)
-    netD_B.apply(weights_init_normal)
+netG_A2B.apply(weights_init_normal)
+netG_B2A.apply(weights_init_normal)
+netD_A.apply(weights_init_normal)
+netD_B.apply(weights_init_normal)
 
 # Lossess
 criterion_GAN = torch.nn.MSELoss()
@@ -99,29 +84,43 @@ transforms_ = [
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
                 transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5)) ]
-dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unaligned=True),
-                        batch_size=opt.batchSize, shuffle=True,drop_last=True)
+
+dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unaligned=False),
+                        batch_size=opt.batchSize, shuffle=True ,drop_last=True)
+
+
+print(netG_A2B)
+print(netG_B2A)
+print(netD_A)
+print(netD_B)
+
 
 # Loss plot
 logger = Logger(opt.n_epochs, len(dataloader))
 ###################################
-
 ###### Training ######
 for epoch in range(opt.epoch, opt.n_epochs):
     for i, batch in enumerate(dataloader):
         # Set model input
         real_A = Variable(input_A.copy_(batch['A']))
         real_B = Variable(input_B.copy_(batch['B']))
-
+        real_A = real_A.type(Tensor)
+        # real_B = real_B.type(Tensor)
+        # real_A = real_A.cuda()
+        # real_B = real_B.cuda()
         ###### Generators A2B and B2A ######
         optimizer_G.zero_grad()
 
         # Identity loss
         # G_A2B(B) should equal B if real B is fed
         same_B = netG_A2B(real_B)
+        # same_B = same_B.type(Tensor)
+        # same_B = same_B.cuda()
         loss_identity_B = criterion_identity(same_B, real_B)*5.0
         # G_B2A(A) should equal A if real A is fed
         same_A = netG_B2A(real_A)
+        # same_A = same_A.type(Tensor)
+        # same_A = same_A.cuda()
         loss_identity_A = criterion_identity(same_A, real_A)*5.0
 
         # GAN loss
