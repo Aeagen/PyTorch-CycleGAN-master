@@ -29,8 +29,8 @@ parser.add_argument('--output_nc', type=int, default=3, help='number of channels
 parser.add_argument('--cuda', default= True, help='use GPU computation')
 parser.add_argument('--generator_A2B', type=str, default='output/netG_A2B.pth', help='A2B generator checkpoint file')
 parser.add_argument('--generator_B2A', type=str, default='output/netG_B2A.pth', help='B2A generator checkpoint file')
-parser.add_argument('--generator_A2B', type=str, default='output/netG_A2B.pth', help='A2B generator checkpoint file')
-parser.add_argument('--generator_B2A', type=str, default='output/netG_B2A.pth', help='B2A generator checkpoint file')
+parser.add_argument('--Discriminator_A', type=str, default='output/netD_A.pth', help='A2B generator checkpoint file')
+parser.add_argument('--Discriminator_B', type=str, default='output/netD_B.pth', help='B2A generator checkpoint file')
 parser.add_argument('--load_dict', default='True', help='load the state model weight')
 opt = parser.parse_args()
 print(opt)
@@ -56,6 +56,8 @@ if opt.load_dict:
     # Load state dicts
     netG_A2B.load_state_dict(torch.load(opt.generator_A2B))
     netG_B2A.load_state_dict(torch.load(opt.generator_B2A))
+    netD_A.load_state_dict(torch.load(opt.Discriminator_A))
+    netD_B.load_state_dict(torch.load(opt.Discriminator_B))
 else:
     #init the weight of random
     netG_A2B.apply(weights_init_normal)
