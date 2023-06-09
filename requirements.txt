@@ -1,8 +1,5 @@
-# pip install -r requirements.txt
-
-# Base ----------------------------------------
-matplotlib>=3.2.2
-numpy>=1.18.5
+matplotlib
+numpy
 opencv-python>=4.1.2
 Pillow>=7.1.2
 PyYAML>=5.3.1
@@ -11,16 +8,16 @@ scipy>=1.4.1
 torch>=1.9.0
 tqdm>=4.41.0
 argparse==1.4.0
-torchvision>=0.8.1
-numpy==1.21.4
-visdom==0.1.8.9
+torchvision
+numpy
+visdom
 
 # Logging -------------------------------------
 tensorboard>=2.4.1
 # wandb
 
 # Plotting ------------------------------------
-pandas>=1.1.4
+pandas
 
 
 
