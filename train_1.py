@@ -103,9 +103,9 @@ dataloader = DataLoader(ImageDataset(opt.dataroot, transforms_=transforms_, unal
 
 
 print(netG_A2B)
-print(netG_B2A)
+
 print(netD_A)
-print(netD_B)
+
 
 
 # Loss plot
