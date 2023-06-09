@@ -19,7 +19,7 @@ from datasets import ImageDataset
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=0, help='starting epoch')
 parser.add_argument('--n_epochs', type=int, default=1000, help='number of epochs of training')
-parser.add_argument('--batchSize', type=int, default=8, help='size of the batches')
+parser.add_argument('--batchSize', type=int, default=4, help='size of the batches')
 parser.add_argument('--dataroot', type=str, default='./dataset/', help='root directory of the dataset')
 parser.add_argument('--lr', type=float, default=0.0002, help='initial learning rate')
 parser.add_argument('--decay_epoch', type=int, default=800, help='epoch to start linearly decaying the learning rate to 0')
